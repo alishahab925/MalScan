@@ -1,0 +1,7 @@
+flask
+flask-cors
+flask-limiter
+pefile
+anthropic
+python-dotenv
+pytest
