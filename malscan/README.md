@@ -12,6 +12,31 @@ MalScan is a professional static malware analysis tool that leverages traditiona
 - **MITRE ATT&CK Mapping**: Maps findings to relevant MITRE techniques.
 - **Modern Web UI**: Clean, responsive dashboard for analysis and reporting.
 
+## Sample Analysis Results
+
+When a file is scanned, MalScan generates a detailed report. Here is an example of the AI-generated behavioral summary and MITRE mapping:
+
+```json
+{
+  "threat_classification": "MALICIOUS",
+  "confidence_score": 95,
+  "threat_family": "Emotet",
+  "behavioral_summary": "The file exhibits classic dropper behavior, attempting to establish persistence via registry keys and communicating with known C2 infrastructure.",
+  "mitre_attack_techniques": [
+    {
+      "id": "T1059.003",
+      "name": "Windows Command Shell",
+      "description": "Adversaries may abuse the Windows command shell for execution."
+    }
+  ],
+  "suspicious_indicators": [
+    "High entropy in .text section (7.8)",
+    "Call to VirtualAlloc followed by CreateRemoteThread",
+    "Encoded PowerShell strings detected"
+  ]
+}
+```
+
 ## How It Works
 
 MalScan performs purely static analysis, meaning **files are never executed**.
