@@ -180,8 +180,16 @@ header p {
     padding-bottom: 0.5rem;
 }
 
-.summary-card, .ioc-card {
+.summary-card, .ioc-card, .recommendations-card, .notes-card {
     grid-column: span 2;
+}
+
+.recommendations-list {
+    padding-left: 1.5rem;
+}
+
+.recommendations-list li {
+    margin-bottom: 0.5rem;
 }
 
 .technique-list {

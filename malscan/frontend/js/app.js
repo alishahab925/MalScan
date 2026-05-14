@@ -206,6 +206,19 @@ document.addEventListener('DOMContentLoaded', () => {
             iocContainer.innerHTML = '<p>No indicators of compromise found.</p>';
         }
 
+        // Recommended Actions
+        const recommendationsContainer = document.getElementById('recommended-actions');
+        recommendationsContainer.innerHTML = '';
+        if (ai_report.recommended_actions && ai_report.recommended_actions.length) {
+            ai_report.recommended_actions.forEach(action => {
+                const li = document.createElement('li');
+                li.textContent = action;
+                recommendationsContainer.appendChild(li);
+            });
+        } else {
+            recommendationsContainer.innerHTML = '<li>No specific actions recommended.</li>';
+        }
+
         // Analyst Notes
         document.getElementById('analyst-notes').innerHTML = `<p>${ai_report.analyst_notes || 'No analyst notes.'}</p>`;
     }
