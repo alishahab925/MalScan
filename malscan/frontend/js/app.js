@@ -109,6 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
         showState(states.UPLOAD);
     });
 
+    function escapeHTML(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
     function renderReport(data) {
         const { static_analysis, ai_report } = data;
 
@@ -142,9 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const div = document.createElement('div');
                 div.className = 'technique-item';
                 div.innerHTML = `
-                    <div class="technique-id">${tech.id}</div>
-                    <div class="technique-name"><strong>${tech.name}</strong></div>
-                    <div class="technique-desc">${tech.description}</div>
+                    <div class="technique-id">${escapeHTML(tech.id)}</div>
+                    <div class="technique-name"><strong>${escapeHTML(tech.name)}</strong></div>
+                    <div class="technique-desc">${escapeHTML(tech.description)}</div>
                 `;
                 mitreContainer.appendChild(div);
             });
@@ -185,19 +192,33 @@ document.addEventListener('DOMContentLoaded', () => {
             if (list.length > 0) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'ioc-table-wrapper';
-                wrapper.innerHTML = `
-                    <h4>${type.replace('_', ' ').toUpperCase()}</h4>
-                    <div class="ioc-list">
-                        ${list.map(ioc => `
-                            <div class="ioc-item">
-                                <span>${ioc}</span>
-                                <button class="copy-btn" onclick="navigator.clipboard.writeText('${ioc}')">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+
+                const h4 = document.createElement('h4');
+                h4.textContent = type.replace('_', ' ').toUpperCase();
+                wrapper.appendChild(h4);
+
+                const iocList = document.createElement('div');
+                iocList.className = 'ioc-list';
+
+                list.forEach(ioc => {
+                    const iocItem = document.createElement('div');
+                    iocItem.className = 'ioc-item';
+
+                    const span = document.createElement('span');
+                    span.textContent = ioc;
+                    iocItem.appendChild(span);
+
+                    const btn = document.createElement('button');
+                    btn.className = 'copy-btn';
+                    btn.innerHTML = '<i class="fas fa-copy"></i>';
+                    btn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(ioc);
+                    });
+                    iocItem.appendChild(btn);
+                    iocList.appendChild(iocItem);
+                });
+
+                wrapper.appendChild(iocList);
                 iocContainer.appendChild(wrapper);
             }
         }
@@ -216,10 +237,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 recommendationsContainer.appendChild(li);
             });
         } else {
-            recommendationsContainer.innerHTML = '<li>No specific actions recommended.</li>';
+            const li = document.createElement('li');
+            li.textContent = 'No specific actions recommended.';
+            recommendationsContainer.appendChild(li);
         }
 
         // Analyst Notes
-        document.getElementById('analyst-notes').innerHTML = `<p>${ai_report.analyst_notes || 'No analyst notes.'}</p>`;
+        const notesContainer = document.getElementById('analyst-notes');
+        notesContainer.innerHTML = '';
+        const notesP = document.createElement('p');
+        notesP.textContent = ai_report.analyst_notes || 'No analyst notes.';
+        notesContainer.appendChild(notesP);
     }
 });
