@@ -21,6 +21,14 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+@app.after_request
+def add_security_headers(response):
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';"
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    return response
+
 # Rate limiter: 100 requests/hour per IP
 limiter = Limiter(
     get_remote_address,
@@ -107,7 +115,8 @@ def scan_file():
         return jsonify(full_report)
 
     except Exception as e:
-        return jsonify({"error": f"Analysis failed: {str(e)}"}), 500
+        app.logger.error(f"Analysis failed: {str(e)}")
+        return jsonify({"error": "Analysis failed due to an internal error."}), 500
 
     finally:
         # Delete file after analysis
